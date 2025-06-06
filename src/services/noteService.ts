@@ -16,8 +16,8 @@ export const fetchNotes = async (page = 1, query = ""): Promise<Note[]> => {
   const params: Record<string, string | number> = { page };
   if (query) params.query = query;
 
-  const res = await noteServiceClient.get<Note[]>("/", { params });
-  return res.data;
+  const res = await noteServiceClient.get<{ notes: Note[] }>("/", { params });
+  return res.data.notes;
 };
 
 export const createNote = async (noteData: NewNoteData): Promise<Note> => {

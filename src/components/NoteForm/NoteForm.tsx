@@ -45,7 +45,13 @@ export default function NoteForm({ onSuccess }: NoteFormProps) {
         <Form className={css.form}>
           <div className={css.formGroup}>
             <label htmlFor="title">Title</label>
-            <input id="title" type="text" name="title" className={css.input} />
+            <Field
+              //   input
+              id="title"
+              type="text"
+              name="title"
+              className={css.input}
+            />
             <ErrorMessage name="title" component="span" className={css.error} />
           </div>
 

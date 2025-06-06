@@ -12,12 +12,21 @@ const noteServiceClient = axios.create({
   },
 });
 
-export const fetchNotes = async (page = 1, query = ""): Promise<Note[]> => {
-  const params: Record<string, string | number> = { page };
-  if (query) params.query = query;
+interface FetchNoteService {
+  notes: Note[];
+  totalPages: number;
+}
 
-  const res = await noteServiceClient.get<{ notes: Note[] }>("/", { params });
-  return res.data.notes;
+export const fetchNotes = async (
+  page = 1,
+  query = "",
+  perPage = 12
+): Promise<FetchNoteService> => {
+  const params: Record<string, string | number> = { page, perPage };
+  if (query) params.search = query;
+
+  const res = await noteServiceClient.get<FetchNoteService>("/", { params });
+  return res.data;
 };
 
 export const createNote = async (noteData: NewNoteData): Promise<Note> => {

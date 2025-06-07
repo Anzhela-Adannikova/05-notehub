@@ -4,21 +4,22 @@ import { fetchNotes } from "../../services/noteService";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import css from "./App.module.css";
 import NoteList from "../NoteList/NoteList";
-import NoteForm from "../NoteForm/NoteForm";
 import NoteModal from "../NoteModal/NoteModal";
 import SearchBox from "../SearchBox/SearchBox";
 import Pagination from "../Pagination/Pagination";
 import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { useDebounce } from "use-debounce";
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [debounceSearchTerm] = useDebounce(searchTerm, 1000);
   const perPage = 12;
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["notes", currentPage, searchTerm],
-    queryFn: () => fetchNotes(currentPage + 1, searchTerm, perPage),
+    queryKey: ["notes", currentPage, debounceSearchTerm],
+    queryFn: () => fetchNotes(currentPage, debounceSearchTerm, perPage),
     placeholderData: keepPreviousData,
   });
 
@@ -28,7 +29,7 @@ export default function App() {
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox onSearch={setSearchTerm} />
+        <SearchBox value={searchTerm} onChange={setSearchTerm} />
         {data && data.totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
@@ -45,11 +46,7 @@ export default function App() {
         <ErrorMessage message="Something went wrong. Please try again." />
       )}
       {data && <NoteList notes={data.notes} />}
-      {isModalOpen && (
-        <NoteModal onClose={closeModal}>
-          <NoteForm onSuccess={closeModal} />
-        </NoteModal>
-      )}
+      {isModalOpen && <NoteModal onClose={closeModal} onSuccess={closeModal} />}
     </div>
   );
 }

@@ -8,9 +8,10 @@ import * as Yup from "yup";
 
 interface NoteFormProps {
   onSuccess: () => void;
+  onClose: () => void;
 }
 
-export default function NoteForm({ onSuccess }: NoteFormProps) {
+export default function NoteForm({ onSuccess, onClose }: NoteFormProps) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -24,7 +25,7 @@ export default function NoteForm({ onSuccess }: NoteFormProps) {
   const NoteSchema = Yup.object().shape({
     title: Yup.string()
       .min(3, "Must be at least 3 characters")
-      .max(40, "Must be at most 40 characters")
+      .max(50, "Must be at most 50 characters")
       .required("Title is required"),
     content: Yup.string().max(500, "Must be at most 500 characters"),
     tag: Yup.string()
@@ -45,13 +46,7 @@ export default function NoteForm({ onSuccess }: NoteFormProps) {
         <Form className={css.form}>
           <div className={css.formGroup}>
             <label htmlFor="title">Title</label>
-            <Field
-              //   input
-              id="title"
-              type="text"
-              name="title"
-              className={css.input}
-            />
+            <Field id="title" type="text" name="title" className={css.input} />
             <ErrorMessage name="title" component="span" className={css.error} />
           </div>
 
@@ -87,7 +82,7 @@ export default function NoteForm({ onSuccess }: NoteFormProps) {
             <button
               type="button"
               className={css.cancelButton}
-              onClick={onSuccess}
+              onClick={onClose}
             >
               Cancel
             </button>

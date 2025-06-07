@@ -2,21 +2,28 @@
 import { useEffect } from "react";
 import css from "./NoteModal.module.css";
 import { createPortal } from "react-dom";
+import NoteForm from "../NoteForm/NoteForm";
 
 interface NoteModalProps {
   onClose: () => void;
-  children: React.ReactNode;
+  onSuccess: () => void;
 }
-export default function NoteModal({ onClose, children }: NoteModalProps) {
+
+export default function NoteModal({ onClose, onSuccess }: NoteModalProps) {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
     };
+
+    document.body.style.overflow = "hidden";
+
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "auto";
     };
   }, [onClose]);
 
@@ -33,7 +40,9 @@ export default function NoteModal({ onClose, children }: NoteModalProps) {
       aria-modal="true"
       onClick={handleBackdropClick}
     >
-      <div className={css.modal}>{children}</div>
+      <div className={css.modal}>
+        {<NoteForm onClose={onClose} onSuccess={onSuccess} />}
+      </div>
     </div>,
     document.body
   );

@@ -26,15 +26,20 @@ export default function App() {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const handleSearchChange = (newTerm: string) => {
+    setSearchTerm(newTerm);
+    setCurrentPage(1);
+  };
+
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
-        <SearchBox value={searchTerm} onChange={setSearchTerm} />
+        <SearchBox value={searchTerm} onChange={handleSearchChange} />
         {data && data.totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
             pageCount={data.totalPages}
-            onPageChange={({ selected }) => setCurrentPage(selected)}
+            onPageChange={setCurrentPage}
           />
         )}
         <button className={css.button} onClick={openModal}>

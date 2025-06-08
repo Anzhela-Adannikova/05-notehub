@@ -1,3 +1,7 @@
+/* fetchNotes : request to get a collection of notes from the server
+createNote: creating a new note on the server
+deleteNote: delete a note by a given identifier */
+
 import axios from "axios";
 import type { Note, NewNoteData } from "../types/note";
 
